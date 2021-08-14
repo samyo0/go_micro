@@ -62,30 +62,3 @@ func (l *listener) Listen() {
 
 	log.Printf("Listening on [%s], qgroup=[%s], durable=[%s]\n", l.subject, l.queueGroupName, l.queueGroupName)
 }
-
-// type TicketCreatedData struct {
-// 	id     string
-// 	title  string
-// 	price  int
-// 	userId string
-// }
-
-// type TicketCreatedEvent struct {
-// 	subject string
-// 	data    TicketCreatedData
-// }
-
-// type listener struct {
-// 	subject        string
-// 	queueGroupName string
-// }
-
-// func (l listener) onMessage(data TicketCreatedData, msg *stan.Msg) {
-// 	fmt.Print("Event data!", data)
-
-// 	fmt.Print("data price", data.price)
-// 	fmt.Print("data title", data.title)
-// 	fmt.Print("data id", data.id)
-
-// 	msg.Ack()
-// }

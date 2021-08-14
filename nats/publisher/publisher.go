@@ -5,9 +5,23 @@ import (
 	"encoding/gob"
 	"fmt"
 	"log"
+	"os"
 
+	"github.com/nats-io/nats.go"
 	"github.com/nats-io/stan.go"
 	"github.com/samyo0/go_micro/nats/constants"
+)
+
+const (
+	Cluster_ID = "NATS_CLUSTER_ID"
+	Client_ID  = "NATS_CLIENT_ID"
+	URL        = "NATS_URL"
+)
+
+var (
+	clusterid = os.Getenv(Cluster_ID)
+	clientid  = os.Getenv(Client_ID)
+	url       = os.Getenv(URL)
 )
 
 type Publisher interface {
@@ -15,18 +29,23 @@ type Publisher interface {
 }
 
 type publisher struct {
-	client stan.Conn
+	nats *nats.Conn
 }
 
-func NewPublisher(client stan.Conn) Publisher {
+func NewPublisher(nats *nats.Conn) Publisher {
 	return &publisher{
-		client,
+		nats,
 	}
 }
 
 func (p *publisher) Publish(e constants.TicketEvent) {
-	fmt.Println(e)
-	err := p.client.Publish(e.Subject, encodeToBytes(e.Data))
+	client, err := stan.Connect(clusterid, clientid, stan.NatsConn(p.nats))
+	if err != nil {
+		log.Fatalf("Can't connect: %v.\nMake sure a NATS Streaming Server is running at: %s", err, url)
+	}
+	defer client.Close()
+
+	err = client.Publish(e.Subject, encodeToBytes(e.Data))
 	if err != nil {
 		log.Fatalf("Error during publish: %v\n", err)
 	}
@@ -34,7 +53,6 @@ func (p *publisher) Publish(e constants.TicketEvent) {
 }
 
 func encodeToBytes(p interface{}) []byte {
-
 	buf := bytes.Buffer{}
 	enc := gob.NewEncoder(&buf)
 	err := enc.Encode(p)

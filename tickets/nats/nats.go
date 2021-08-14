@@ -5,7 +5,6 @@ import (
 	"os"
 
 	nats "github.com/nats-io/nats.go"
-	"github.com/nats-io/stan.go"
 )
 
 const (
@@ -15,28 +14,36 @@ const (
 )
 
 var (
-	Client    stan.Conn
-	clusterid = os.Getenv(Cluster_ID)
-	clientid  = os.Getenv(Client_ID)
-	url       = os.Getenv(URL)
+	NC  *nats.Conn
+	url = os.Getenv(URL)
 )
 
 func init() {
 	opts := []nats.Option{nats.Name("NATS Streaming Example Publisher")}
 
 	// Connect to NATS
-	nc, err := nats.Connect(url, opts...)
+	var err error
+	NC, err = nats.Connect(url, opts...)
 	if err != nil {
 		log.Fatal(url)
 		log.Fatal(err)
 	}
-	defer nc.Close()
+	defer NC.Close()
 
-	Client, err = stan.Connect(clusterid, clientid, stan.NatsConn(nc))
-	if err != nil {
-		log.Fatalf("Can't connect: %v.\nMake sure a NATS Streaming Server is running at: %s", err, url)
-	}
-	defer Client.Close()
+	// e := constants.TicketEvent{
+	// 	Subject: constants.TicketCreated,
+	// 	Data: constants.Data{
+	// 		Title:  "matix",
+	// 		Price:  427,
+	// 		UserId: "123",
+	// 	},
+	// }
 
-	log.Printf("Connected to NATS")
+	// err = Client.Publish(e.Subject, encodeToBytes(e.Data))
+	// if err != nil {
+	// 	log.Fatalf("Error during publish: %v\n", err)
+	// }
+	// log.Printf("Published [%s] : '%s'\n", e.Subject, e.Data)
+
+	// log.Printf("Connected to NATS clusterid: [%s], clientId:[%s], url:[%s]", clusterid, clientid, url)
 }

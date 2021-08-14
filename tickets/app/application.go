@@ -14,7 +14,7 @@ var (
 )
 
 func StartApplication() {
-	ticketService := ticket.NewService(db.NewRepository(), publisher.NewPublisher(nats.Client))
+	ticketService := ticket.NewService(db.NewRepository(), publisher.NewPublisher(nats.NC))
 	ticketHandler := http.NewHandler(ticketService)
 
 	router.GET("/api/tickets", ticketHandler.GetAll)

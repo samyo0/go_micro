@@ -1,7 +1,11 @@
 package ticket
 
 import (
+	"bytes"
+	"encoding/gob"
 	"errors"
+	"fmt"
+	"log"
 
 	"github.com/samyo0/go_micro/nats/constants"
 	"github.com/samyo0/go_micro/nats/publisher"
@@ -83,4 +87,16 @@ func (s *service) UpdateById(ticket *Ticket) (*Ticket, error) {
 	s.repository.UpdateById(current)
 
 	return nil, errors.New("implement me FindById")
+}
+
+func encodeToBytes(p interface{}) []byte {
+
+	buf := bytes.Buffer{}
+	enc := gob.NewEncoder(&buf)
+	err := enc.Encode(p)
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Println("uncompressed size (bytes): ", len(buf.Bytes()))
+	return buf.Bytes()
 }
