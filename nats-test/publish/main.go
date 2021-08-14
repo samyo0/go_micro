@@ -1,7 +1,8 @@
 package main
 
 import (
-	"encoding/json"
+	"bytes"
+	"encoding/gob"
 	"flag"
 	"fmt"
 	"log"
@@ -69,21 +70,26 @@ func main() {
 	defer sc.Close()
 
 	// subj, msg := args[0], []byte(args[1])
-	byt := []byte(`
-		{
-			"data": {
-				"id": 1,
-				"title": "matrix",
-				"price": 500,
-				"userId": 123
-			}
-		}
-	`)
-
-	var event constants.Event
-	if err := json.Unmarshal(byt, &event); err != nil {
-		panic(err)
+	e := constants.TicketEvent{
+		Subject: constants.TicketCreated,
+		Data: constants.Data{
+			Title:  "matix",
+			Price:  427,
+			UserId: "123",
+		},
 	}
 
-	publisher.NewPublisher(constants.TicketCreated, sc).Publish(event)
+	publisher.NewPublisher(sc).Publish(e)
+}
+
+func encodeToBytes(p interface{}) []byte {
+
+	buf := bytes.Buffer{}
+	enc := gob.NewEncoder(&buf)
+	err := enc.Encode(p)
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Println("uncompressed size (bytes): ", len(buf.Bytes()))
+	return buf.Bytes()
 }

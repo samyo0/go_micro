@@ -13,6 +13,6 @@ type Data struct {
 }
 
 type TicketEvent struct {
-	Subject string
-	Data    Data
+	Subject string `json:"id"`
+	Data    Data   `json:"data"`
 }

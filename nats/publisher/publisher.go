@@ -25,6 +25,7 @@ func NewPublisher(client stan.Conn) Publisher {
 }
 
 func (p *publisher) Publish(e constants.TicketEvent) {
+	fmt.Println(e)
 	err := p.client.Publish(e.Subject, encodeToBytes(e.Data))
 	if err != nil {
 		log.Fatalf("Error during publish: %v\n", err)

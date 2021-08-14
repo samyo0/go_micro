@@ -38,9 +38,9 @@ func printMsg(m *stan.Msg) {
 
 func (l *listener) Listen() {
 	mcb := func(msg *stan.Msg) {
-		var data constants.Data
+		var data constants.TicketEvent
 		fmt.Println(msg.Data)
-		json.Unmarshal([]byte(msg.Data), &data)
+		json.Unmarshal(msg.Data, &data)
 
 		fmt.Println("------")
 		fmt.Println(data)

@@ -52,16 +52,13 @@ func (s *service) CreateTicket(ticket Ticket) error {
 	e := constants.TicketEvent{
 		Subject: constants.TicketCreated,
 		Data: constants.Data{
-			Id:     ticket.Id,
 			Title:  ticket.Title,
 			Price:  ticket.Price,
 			UserId: ticket.UserId,
 		},
 	}
 
-	if err := s.stan.Publish(e); err != nil {
-		return err
-	}
+	s.stan.Publish(e)
 
 	return nil
 }
