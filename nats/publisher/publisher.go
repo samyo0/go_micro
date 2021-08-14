@@ -11,7 +11,7 @@ import (
 )
 
 type Publisher interface {
-	Publish(constants.Event)
+	Publish(constants.TicketEvent)
 }
 
 type publisher struct {
