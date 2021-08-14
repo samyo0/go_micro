@@ -1,0 +1,12 @@
+FROM golang
+
+WORKDIR '/app'
+
+# COPY go.mod .
+# COPY go.sum .
+COPY . .
+RUN go get .
+
+RUN go get github.com/githubnemo/CompileDaemon
+
+ENTRYPOINT CompileDaemon --build="go build main.go" --command=./main
