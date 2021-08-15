@@ -35,13 +35,11 @@ func NewNatsClient() stan.Conn {
 		log.Fatal(url)
 		log.Fatal(err)
 	}
-	defer nc.Close()
 
 	client, err := stan.Connect(clusterid, clientid, stan.NatsConn(nc))
 	if err != nil {
 		log.Fatalf("Can't connect: %v.\nMake sure a NATS Streaming Server is running at: %s", err, url)
 	}
-	defer client.Close()
 
 	e := constants.TicketEvent{
 		Subject: constants.TicketCreated,
