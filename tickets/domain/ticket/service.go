@@ -3,7 +3,6 @@ package ticket
 import (
 	"bytes"
 	"encoding/gob"
-	"errors"
 	"fmt"
 	"log"
 
@@ -86,7 +85,18 @@ func (s *service) UpdateById(ticket *Ticket) (*Ticket, error) {
 
 	s.repository.UpdateById(current)
 
-	return nil, errors.New("implement me FindById")
+	e := constants.TicketEvent{
+		Subject: constants.TicketUpdated,
+		Data: constants.Data{
+			Title:  current.Title,
+			Price:  current.Price,
+			UserId: current.UserId,
+		},
+	}
+
+	s.stan.Publish(e)
+
+	return current, nil
 }
 
 func encodeToBytes(p interface{}) []byte {

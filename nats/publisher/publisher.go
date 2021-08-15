@@ -23,10 +23,13 @@ func NewPublisher(client stan.Conn) Publisher {
 }
 
 func (p *publisher) Publish(e constants.TicketEvent) {
-	b, _ := json.Marshal(e)
+	b, err := json.Marshal(e)
+	if err != nil {
+		log.Fatalf("Error during json marshall: %v\n", err)
+	}
 	err := p.client.Publish(e.Subject, b)
 	if err != nil {
 		log.Fatalf("Error during publish: %v\n", err)
 	}
-	log.Printf("Published [%s] : '%s'\n", e.Subject, e.Data)
+	log.Printf("Published [%s] : '%s'\n", e.Subject, e)
 }
