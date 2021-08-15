@@ -27,7 +27,7 @@ func (p *publisher) Publish(e constants.TicketEvent) {
 	if err != nil {
 		log.Fatalf("Error during json marshall: %v\n", err)
 	}
-	err := p.client.Publish(e.Subject, b)
+	err = p.client.Publish(e.Subject, b)
 	if err != nil {
 		log.Fatalf("Error during publish: %v\n", err)
 	}
