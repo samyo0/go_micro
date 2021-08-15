@@ -6,10 +6,10 @@ var TicketCreated = "ticket:created"
 var TicketUpdated = "ticket:updated"
 
 type Data struct {
-	Id     primitive.ObjectID `json:"id"`
-	Title  string             `json:"title"`
-	Price  int                `json:"price"`
-	UserId string             `json:"userId"`
+	Id     primitive.ObjectID `json:"Id"`
+	Title  string             `json:"Title"`
+	Price  int                `json:"Price"`
+	UserId string             `json:"UserId"`
 }
 
 type TicketEvent struct {

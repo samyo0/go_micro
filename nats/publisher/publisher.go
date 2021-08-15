@@ -1,9 +1,7 @@
 package publisher
 
 import (
-	"bytes"
-	"encoding/gob"
-	"fmt"
+	"encoding/json"
 	"log"
 
 	"github.com/nats-io/stan.go"
@@ -25,20 +23,9 @@ func NewPublisher(client stan.Conn) Publisher {
 }
 
 func (p *publisher) Publish(e constants.TicketEvent) {
-	err := p.client.Publish(e.Subject, encodeToBytes(e.Data))
+	err := p.client.Publish(e.Subject, json.Marshall(e.Data))
 	if err != nil {
 		log.Fatalf("Error during publish: %v\n", err)
 	}
 	log.Printf("Published [%s] : '%s'\n", e.Subject, e.Data)
-}
-
-func encodeToBytes(p interface{}) []byte {
-	buf := bytes.Buffer{}
-	enc := gob.NewEncoder(&buf)
-	err := enc.Encode(p)
-	if err != nil {
-		log.Fatal(err)
-	}
-	fmt.Println("uncompressed size (bytes): ", len(buf.Bytes()))
-	return buf.Bytes()
 }
