@@ -88,9 +88,9 @@ func (s *service) UpdateById(ticket *Ticket) (*Ticket, error) {
 	e := constants.TicketEvent{
 		Subject: constants.TicketUpdated,
 		Data: constants.Data{
-			Title:  current.Title,
-			Price:  current.Price,
-			UserId: current.UserId,
+			Title:  "current.Title",
+			Price:  123,
+			UserId: "current.UserId",
 		},
 	}
 

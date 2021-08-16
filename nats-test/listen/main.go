@@ -50,12 +50,15 @@ func main() {
 	var (
 		clusterID, clientID string
 		URL                 string
+		subject             string
 	)
 
 	flag.StringVar(&URL, "s", stan.DefaultNatsURL, "The nats server URLs (separated by comma)")
 	flag.StringVar(&URL, "server", stan.DefaultNatsURL, "The nats server URLs (separated by comma)")
 	flag.StringVar(&clusterID, "c", "test-cluster", "The NATS Streaming cluster ID")
 	flag.StringVar(&clusterID, "cluster", "test-cluster", "The NATS Streaming cluster ID")
+	flag.StringVar(&subject, "subject", "", "The NATS Streaming subject")
+	flag.StringVar(&subject, "s", "", "The NATS Streaming subject")
 
 	log.SetFlags(0)
 	flag.Usage = usage
@@ -81,7 +84,7 @@ func main() {
 	log.Printf("Connected to %s clusterID: [%s] clientID: [%s]\n", URL, clusterID, clientID)
 
 	var sub listener.Listener
-	sub = listener.NewListener(constants.TicketCreated, "payment-service", sc)
+	sub = listener.NewListener(constants.TicketUpdated, "payment-service", sc)
 	sub.Listen()
 
 	log.Printf("Listening on clientID=[%s]", clientID)
