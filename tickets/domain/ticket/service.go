@@ -1,11 +1,6 @@
 package ticket
 
 import (
-	"bytes"
-	"encoding/gob"
-	"fmt"
-	"log"
-
 	"github.com/samyo0/go_micro/nats/constants"
 	"github.com/samyo0/go_micro/nats/publisher"
 )
@@ -88,25 +83,13 @@ func (s *service) UpdateById(ticket *Ticket) (*Ticket, error) {
 	e := constants.TicketEvent{
 		Subject: constants.TicketUpdated,
 		Data: constants.Data{
-			Title:  "current.Title",
-			Price:  123,
-			UserId: "current.UserId",
+			Title:  ticket.Title,
+			Price:  ticket.Price,
+			UserId: ticket.UserId,
 		},
 	}
 
 	s.stan.Publish(e)
 
 	return current, nil
-}
-
-func encodeToBytes(p interface{}) []byte {
-
-	buf := bytes.Buffer{}
-	enc := gob.NewEncoder(&buf)
-	err := enc.Encode(p)
-	if err != nil {
-		log.Fatal(err)
-	}
-	fmt.Println("uncompressed size (bytes): ", len(buf.Bytes()))
-	return buf.Bytes()
 }

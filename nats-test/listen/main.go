@@ -12,7 +12,7 @@ import (
 	"github.com/nats-io/stan.go"
 
 	// "github.com/nats-io/stan.go/pb"
-	"github.com/samyo0/go_micro/nats/constants"
+
 	"github.com/samyo0/go_micro/nats/listener"
 )
 
@@ -48,17 +48,16 @@ func printMsg(m *stan.Msg, i int) {
 
 func main() {
 	var (
-		clusterID, clientID string
-		URL                 string
-		subject             string
+		clusterID string
+		URL       string
+		subject   string
 	)
 
-	flag.StringVar(&URL, "s", stan.DefaultNatsURL, "The nats server URLs (separated by comma)")
 	flag.StringVar(&URL, "server", stan.DefaultNatsURL, "The nats server URLs (separated by comma)")
 	flag.StringVar(&clusterID, "c", "test-cluster", "The NATS Streaming cluster ID")
 	flag.StringVar(&clusterID, "cluster", "test-cluster", "The NATS Streaming cluster ID")
-	flag.StringVar(&subject, "subject", "", "The NATS Streaming subject")
-	flag.StringVar(&subject, "s", "", "The NATS Streaming subject")
+	flag.StringVar(&subject, "subject", "subject", "The NATS Streaming subject")
+	flag.StringVar(&subject, "s", "subject", "The NATS Streaming subject")
 
 	log.SetFlags(0)
 	flag.Usage = usage
@@ -81,13 +80,11 @@ func main() {
 	if err != nil {
 		log.Fatalf("Can't connect: %v.\nMake sure a NATS Streaming Server is running at: %s", err, URL)
 	}
-	log.Printf("Connected to %s clusterID: [%s] clientID: [%s]\n", URL, clusterID, clientID)
+	log.Printf("Connected to %s clusterID: [%s] \n", URL, clusterID)
 
 	var sub listener.Listener
-	sub = listener.NewListener(constants.TicketUpdated, "payment-service", sc)
+	sub = listener.NewListener(subject, "payment-service", sc)
 	sub.Listen()
-
-	log.Printf("Listening on clientID=[%s]", clientID)
 
 	// Wait for a SIGINT (perhaps triggered by user with CTRL-C)
 	// Run cleanup when signal is received
